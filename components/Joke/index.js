@@ -1,43 +1,36 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useSWR from "swr";
+
+// const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 export default function Joke() {
-  const [joke, setJoke] = useState();
   const [id, setId] = useState(0);
 
-  useEffect(() => {
-    async function startFetching() {
-      const response = await fetch(
-        `https://example-apis.vercel.app/api/bad-jokes/${id}`
-      );
-      const joke = await response.json();
+  const {
+    data: joke,
+    isLoading,
+    error,
+  } = useSWR(`https://example-apis.vercel.app/api/bad-jokes/${id}`);
 
-      setJoke(joke);
-    }
-
-    startFetching();
-  }, [id]);
-
-  function handlePrevJoke() {
-    setId(joke.prevId);
+  if (error) {
+    return <h1>failed to load: {error.message}</h1>;
   }
 
-  function handleNextJoke() {
-    setId(joke.nextId);
+  if (isLoading) {
+    return <h1> 🤡 Loading...</h1>;
   }
 
-  if (!joke) {
-    return <h1>Loading...</h1>;
-  }
+  console.log(joke);
 
   return (
     <>
       <small>ID: {id}</small>
       <h1>{joke.joke}</h1>
       <div>
-        <button type="button" onClick={handlePrevJoke}>
+        <button type="button" onClick={() => setId(joke.prevId)}>
           ← Prev Joke
         </button>
-        <button type="button" onClick={handleNextJoke}>
+        <button type="button" onClick={() => setId(joke.nextId)}>
           Next Joke →
         </button>
       </div>
