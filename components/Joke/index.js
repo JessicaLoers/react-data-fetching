@@ -17,14 +17,6 @@ export default function Joke() {
     startFetching();
   }, [id]);
 
-  function handlePrevJoke() {
-    setId(joke.prevId);
-  }
-
-  function handleNextJoke() {
-    setId(joke.nextId);
-  }
-
   if (!joke) {
     return <h1>Loading...</h1>;
   }
@@ -34,10 +26,10 @@ export default function Joke() {
       <small>ID: {id}</small>
       <h1>{joke.joke}</h1>
       <div>
-        <button type="button" onClick={handlePrevJoke}>
+        <button type="button" onClick={() => setId(joke.prevId)}>
           ← Prev Joke
         </button>
-        <button type="button" onClick={handleNextJoke}>
+        <button type="button" onClick={() => setId(joke.nextId)}>
           Next Joke →
         </button>
       </div>
